@@ -202,49 +202,57 @@ def over_totaler(list, num):  # sum all rolls of num or higher
 def greater_analysis_string(l1, l2, l3, l4, num):
     odl = best_place_comparison(l1, l2, l3, l4)
     i = goal - 1  # for indexing
-    str1  = "In order to move " + str(goal) + " or more spaces, \n"
-    
-    str1 += "    Golden dice: " + str(over_totaler(l1, num))
-    str1 += "     -->    Optimal: " + place_helper(0) + " ("
-    str1 += str(over_totaler(l1, num)) + "/216 = " + str(round((over_totaler(l1, num)/2.16), 2)) + "%)\n"
+    str1  = f"This list shows the best die for the number of spaces, "
+    str1 += f"displaying the PROBABILITY for all worse die. \n    In order to move "
+    str1 += f"{str(goal)} spaces OR HIGHER: \n"
 
-    str1 += f"    Silver dice: + {str(over_totaler(l2, num))}"
+    str1 += f"        Golden dice: {str(over_totaler(l1, num)):>3}"  # {:>3} pads the number up to 3 places on left
+                                                                     # {:>02} pads it 2 places and fills with 0s
+    str1 += f"     -->    Optimal: {place_helper(0)} ("
+    str1 += f"{str(over_totaler(l1, num)):>03}/216 = {str(round((over_totaler(l1, num)/2.16), 2)):>5}%)\n"
+    str1 += f"        Silver dice: {str(over_totaler(l2, num)):>3}"
     if (over_totaler(l2, num) != 0):
-        str1 += "     -->             " + place_helper(1) + " ("
-        str1 += str(over_totaler(l2, num)) + "/216 = " + str(round((over_totaler(l2, num)/2.16), 2)) + "%)"
+        str1 += f"     -->             {place_helper(1)} ("
+        str1 += f"{str(over_totaler(l2, num)):>03}/216 = {str(round((over_totaler(l2, num)/2.16), 2)):>5}%)"
+    str1 += "\n"                                                     # guaranteeing the line break gets added
+    str1 += f"        Bronze dice: {str(over_totaler(l3, num)):>3}"
+    if (over_totaler(l3, num) != 0):
+        str1 += f"     -->             {place_helper(2)} ("
+        str1 += f"{str(over_totaler(l3, num)):>03}/216 = {str(round((over_totaler(l3, num)/2.16), 2)):>5}%)"
     str1 += "\n"
-
-    
-    
+    str1 += f"        Single dice: {str(over_totaler(l4, num)):>3}"
+    if (over_totaler(l4, num) != 0):
+        str1 += f"     -->             {place_helper(3)} ("
+        str1 += f"{str(over_totaler(l4, num)):>03}/216 = {str(round((over_totaler(l4, num)/2.16), 2)):>5}%)"
+    str1 += "\n"
     return str1
 
 def equal_analysis_string(l1, l2, l3, l4, goal):  # goal is always 1-18
     odl = best_place_comparison(l1, l2, l3, l4)
     i = goal - 1  # for indexing
-    str1  = "In order to move exactly " + str(goal) + " spaces, \n"
+    str1  = f"This list shows the best die for the number of spaces, "
+    str1 += f"displaying the DIFFERENCE in probability for the other dice. \n    In order to move exactly "
+    str1 += f"{str(goal)} spaces: \n"
 
     # Results List string
-    str1 += "    Golden dice: " + str(l1[i][1])
-    str1 += "     -->    Optimal: " + place_helper(odl[i][0][0]) + " ("
-    str1 += str(odl[i][0][1]) + "/216 = " + str(round((odl[i][0][1]/2.16), 2)) + "%)\n"
-
-    str1 += "    Silver dice: " + str(l2[i][1])
+    str1 += f"        Golden dice: {str(l1[i][1]):>3}"
+    str1 += f"     -->    Optimal: {place_helper(odl[i][0][0])} ("
+    str1 += f"{str(odl[i][0][1]):>3}/216 = {str(round((odl[i][0][1]/2.16), 2)):>5}%)\n"
+    str1 += f"        Silver dice: {str(l2[i][1]):>3}"
     if ((odl[i][0][1]) != (-1 * odl[i][1][1])): # if it's possible to roll it
-        str1 += "     -->             " + place_helper(odl[i][1][0]) + " ("
-        str1 += str(odl[i][1][1]) + "/216 = " + str(round((odl[i][1][1]/2.16), 2)) + "%)" 
-    str1 += "\n"  # guaranteeing the line break gets added
-
-    str1 += "    Bronze dice: " + str(l3[i][1])
+        str1 += f"     -->             {place_helper(odl[i][1][0])} ("
+        str1 += f"{str(odl[i][1][1]):>3}/216 = {str(round((odl[i][1][1]/2.16), 2)):>5}%)" 
+    str1 += "\n"
+    str1 += f"        Bronze dice: {str(l3[i][1]):>3}"
     if ((odl[i][0][1]) != (-1 * odl[i][2][1])): # if it's possible to roll it
-        str1 += "     -->             " + place_helper(odl[i][2][0]) + " ("
-        str1 += str(odl[i][2][1]) + "/216 = " + str(round((odl[i][2][1]/2.16), 2)) + "%)" 
-    str1 += "\n"  # guaranteeing the line break gets added
-
-    str1 += "    Single die:  " + str(l4[i][1])
+        str1 += f"     -->             {place_helper(odl[i][2][0])} ("
+        str1 += f"{str(odl[i][2][1]):>3}/216 = {str(round((odl[i][2][1]/2.16), 2)):>5}%)" 
+    str1 += "\n"
+    str1 += f"        Single die:  {str(l4[i][1]):>3}"
     if ((odl[i][0][1]) != (-1 * odl[i][3][1])): # if it's possible to roll it
-        str1 += "     -->             " + place_helper(odl[i][3][0]) + " ("
-        str1 += str(odl[i][3][1]) + "/216 = " + str(round((odl[i][3][1]/2.16), 2)) + "%)"
-    str1 += "\n"  # guaranteeing the line break gets added
+        str1 += f"     -->             {place_helper(odl[i][3][0])} ("
+        str1 += f"{str(odl[i][3][1]):>3}/216 = {str(round((odl[i][3][1]/2.16), 2)):>5}%)"
+    str1 += "\n"
     return  str1
 
 def less_analysis(num):
@@ -264,7 +272,6 @@ result4 = tabulate(d1, d2)
 # print(result4) DEBUG
 totals4 = count(result4)
 print()  # spacing
-nap(0.4)
 
 # 3rd Place Results
 print("3rd Place (bronze):")
@@ -274,7 +281,6 @@ result3 = tabulate(d3, d4)
 # print(result3) # DEBUG
 totals3 = count(result3)
 print()  # spacing
-nap(0.4)
 
 # 2nd Place Results
 print("2nd Place (silver):")
@@ -284,7 +290,6 @@ result2 = tabulate(d5, d6)
 # print(result2) # DEBUG
 totals2 = count(result2)
 print()  # spacing
-nap(0.4)
 
 # 1st Place Results
 print("1st Place (gold):")
