@@ -197,8 +197,6 @@ def over_totaler(list, num):  # sum all rolls of num or higher
     sum = 0
     for x in range(i, len(list)):
         sum += list[x][1]
-        print(list[x])
-    print(sum)
     return sum
 
 def greater_analysis_string(l1, l2, l3, l4, num):
@@ -206,9 +204,17 @@ def greater_analysis_string(l1, l2, l3, l4, num):
     i = goal - 1  # for indexing
     str1  = "In order to move " + str(goal) + " or more spaces, \n"
     
-    str1 += "    Golden dice: " + str(l1[i][1])
-    str1 += "     -->    Optimal: " + place_helper(odl[i][0][0]) + " ("
-    str1 += str(over_totaler(l1, num)) + " /216 = " # DEBUG # + str(round((over_totaler(l1, num)/2.16), 2)) + "%)\n"
+    str1 += "    Golden dice: " + str(over_totaler(l1, num))
+    str1 += "     -->    Optimal: " + place_helper(0) + " ("
+    str1 += str(over_totaler(l1, num)) + "/216 = " + str(round((over_totaler(l1, num)/2.16), 2)) + "%)\n"
+
+    str1 += f"    Silver dice: + {str(over_totaler(l2, num))}"
+    if (over_totaler(l2, num) != 0):
+        str1 += "     -->             " + place_helper(1) + " ("
+        str1 += str(over_totaler(l2, num)) + "/216 = " + str(round((over_totaler(l2, num)/2.16), 2)) + "%)"
+    str1 += "\n"
+
+    
     
     return str1
 
@@ -220,24 +226,24 @@ def equal_analysis_string(l1, l2, l3, l4, goal):  # goal is always 1-18
     # Results List string
     str1 += "    Golden dice: " + str(l1[i][1])
     str1 += "     -->    Optimal: " + place_helper(odl[i][0][0]) + " ("
-    str1 += str(odl[i][0][1]) + " /216 = " + str(round((odl[i][0][1]/2.16), 2)) + "%)\n"
+    str1 += str(odl[i][0][1]) + "/216 = " + str(round((odl[i][0][1]/2.16), 2)) + "%)\n"
 
     str1 += "    Silver dice: " + str(l2[i][1])
     if ((odl[i][0][1]) != (-1 * odl[i][1][1])): # if it's possible to roll it
         str1 += "     -->             " + place_helper(odl[i][1][0]) + " ("
-        str1 += str(odl[i][1][1]) + " /216 = " + str(round((odl[i][1][1]/2.16), 2)) + "%)" 
+        str1 += str(odl[i][1][1]) + "/216 = " + str(round((odl[i][1][1]/2.16), 2)) + "%)" 
     str1 += "\n"  # guaranteeing the line break gets added
 
     str1 += "    Bronze dice: " + str(l3[i][1])
     if ((odl[i][0][1]) != (-1 * odl[i][2][1])): # if it's possible to roll it
         str1 += "     -->             " + place_helper(odl[i][2][0]) + " ("
-        str1 += str(odl[i][2][1]) + " /216 = " + str(round((odl[i][2][1]/2.16), 2)) + "%)" 
+        str1 += str(odl[i][2][1]) + "/216 = " + str(round((odl[i][2][1]/2.16), 2)) + "%)" 
     str1 += "\n"  # guaranteeing the line break gets added
 
     str1 += "    Single die:  " + str(l4[i][1])
     if ((odl[i][0][1]) != (-1 * odl[i][3][1])): # if it's possible to roll it
         str1 += "     -->             " + place_helper(odl[i][3][0]) + " ("
-        str1 += str(odl[i][3][1]) + " /216 = " + str(round((odl[i][3][1]/2.16), 2)) + "%)"
+        str1 += str(odl[i][3][1]) + "/216 = " + str(round((odl[i][3][1]/2.16), 2)) + "%)"
     str1 += "\n"  # guaranteeing the line break gets added
     return  str1
 
