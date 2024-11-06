@@ -192,8 +192,25 @@ def print_final_comparison(l1, l2, l3, l4):  # (gold, silver, bronze, last)
     nap(0.2)
     return
 
-def greater_analysis(num):
-    pass
+def over_totaler(list, num):  # sum all rolls of num or higher
+    i = num - 1  # for indexing
+    sum = 0
+    for x in range(i, len(list)):
+        sum += list[x][1]
+        print(list[x])
+    print(sum)
+    return sum
+
+def greater_analysis_string(l1, l2, l3, l4, num):
+    odl = best_place_comparison(l1, l2, l3, l4)
+    i = goal - 1  # for indexing
+    str1  = "In order to move " + str(goal) + " or more spaces, \n"
+    
+    str1 += "    Golden dice: " + str(l1[i][1])
+    str1 += "     -->    Optimal: " + place_helper(odl[i][0][0]) + " ("
+    str1 += str(over_totaler(l1, num)) + " /216 = " # DEBUG # + str(round((over_totaler(l1, num)/2.16), 2)) + "%)\n"
+    
+    return str1
 
 def equal_analysis_string(l1, l2, l3, l4, goal):  # goal is always 1-18
     odl = best_place_comparison(l1, l2, l3, l4)
@@ -291,29 +308,27 @@ while True:
     query = ""
     print("What is the goal outcome?")
     nap(0.2)
-    query = input("(type \">X\" for movement > X spaces, " + 
+    query = input("(type \">X\" for movement >= X spaces, " + 
                   "\"=X\" for movement of exactly X spaces, " +
-                  "or \"<X\" for movement < X spaces): ")
+                  "or \"<X\" for movement <= X spaces): ")
     query.split()  # query is now a list of the input characters
     fake_load()
-    if (query[0] == '>'): # Greater than 
+    try:  # handle bad numbers
+        goal = int(query[1:])
+        is_int_one_to_eighteen(goal)
+    except ValueError:
+        print("Enter an integer number after the \"" + query[0] + "\" sign")
         pass
-
-    if (query[0] == '='):
-        try:  # handle bad numbers
-            goal = int(query[1:])
-            is_int_one_to_eighteen(goal)
-        except ValueError:
-            print("Enter an integer number after the \"" + query[0] + "\" sign")
-            pass
-        except OutOfRangeException:
-            print("It is impossible to roll a number lower than a 1 or higher than an 18.")
-            pass
-        else:  # if no errors
+    except OutOfRangeException:
+        print("It is impossible to roll a number lower than a 1 or higher than an 18.")
+        pass
+    else:  # if no errors
+        if (query[0] == '>'): # Greater than 
+            print(greater_analysis_string(a, b, c, d, goal))
+        if (query[0] == '='):
             print(equal_analysis_string(a, b, c, d, goal))  # returns one big output string
-
-    if (query[0] == '<'):
-        pass
+        if (query[0] == '<'):
+            pass
 
 print("Goodbye.")
 nap(0.4)
