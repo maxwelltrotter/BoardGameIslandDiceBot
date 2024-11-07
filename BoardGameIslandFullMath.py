@@ -10,12 +10,26 @@
                    # This version of the program accounts for the extra die the player gains in-game
                    # when rolling doubles.
 
+from colorama import init as colorama_init
+from colorama import Fore
+from colorama import Style
 import math as math
 from operator import itemgetter as itemget
 from time import sleep as nap
 
+########################################  Globals  ##########################################
+RED = Fore.RED
+GREEN = Fore.GREEN
+BLUE = Fore.CYAN
+DEFAULT = Fore.RESET
+
+DIM = Style.DIM
+BOLD = Style.BRIGHT
+RESET = Style.RESET_ALL
+#############################################################################################
+
 class Die():
-    place = "4th Place"
+    place = f"4th Place"
     face_pips = []
     num_faces = 0
 
@@ -41,13 +55,16 @@ class goldenDie(basicDie):  # Golden dice are identical to single dice (1-6)
 class OutOfRangeException(Exception):
     pass
 
+class HuhException(Exception):
+    pass
+
 def fake_load():
     nap(0.5)
-    print(".")
+    print(f"{BOLD}{BLUE}.")
     nap(0.03)
     print(".")
     nap(0.03)
-    print(".")
+    print(f".{DEFAULT}{RESET}")
     nap(0.8)
 
 def place_helper(index):
@@ -59,6 +76,11 @@ def place_helper(index):
 def is_int_one_to_eighteen(num):
     if ((num < 1) or (num > 18)):
         raise OutOfRangeException
+    return
+
+def isnt_weird(sym):
+    if (sym != '>' and sym != '=' and sym != '<'):
+        raise HuhException
     return
 
 # Create list of all possible rolls
@@ -202,14 +224,14 @@ def over_totaler(list, num):  # sum all rolls of num or higher
 def greater_analysis_string(l1, l2, l3, l4, num):
     odl = best_place_comparison(l1, l2, l3, l4)
     i = goal - 1  # for indexing
-    str1  = f"This list shows the best die for the number of spaces, "
+    str1  = f"This list shows the {GREEN}best{DEFAULT} die for the number of spaces, "
     str1 += f"displaying the PROBABILITY for all worse die. \n    In order to move "
     str1 += f"{str(goal)} spaces OR HIGHER: \n"
 
     str1 += f"        Golden dice: {str(over_totaler(l1, num)):>3}"  # {:>3} pads the number up to 3 places on left
                                                                      # {:>02} pads it 2 places and fills with 0s
-    str1 += f"     -->    Optimal: {place_helper(0)} ("
-    str1 += f"{str(over_totaler(l1, num)):>03}/216 = {str(round((over_totaler(l1, num)/2.16), 2)):>5}%)\n"
+    str1 += f"     -->    {GREEN}Optimal: {place_helper(0)} ("
+    str1 += f"{str(over_totaler(l1, num)):>03}/216 = {str(round((over_totaler(l1, num)/2.16), 2)):>5}%){DEFAULT}\n"
     str1 += f"        Silver dice: {str(over_totaler(l2, num)):>3}"
     if (over_totaler(l2, num) != 0):
         str1 += f"     -->             {place_helper(1)} ("
@@ -230,14 +252,14 @@ def greater_analysis_string(l1, l2, l3, l4, num):
 def equal_analysis_string(l1, l2, l3, l4, goal):  # goal is always 1-18
     odl = best_place_comparison(l1, l2, l3, l4)
     i = goal - 1  # for indexing
-    str1  = f"This list shows the best die for the number of spaces, "
+    str1  = f"This list shows the {GREEN}best{DEFAULT} die for the number of spaces, "
     str1 += f"displaying the DIFFERENCE in probability for the other dice. \n    In order to move exactly "
     str1 += f"{str(goal)} spaces: \n"
 
     # Results List string
     str1 += f"        Golden dice: {str(l1[i][1]):>3}"
-    str1 += f"     -->    Optimal: {place_helper(odl[i][0][0])} ("
-    str1 += f"{str(odl[i][0][1]):>3}/216 = {str(round((odl[i][0][1]/2.16), 2)):>5}%)\n"
+    str1 += f"     -->    {GREEN}Optimal: {place_helper(odl[i][0][0])} ("
+    str1 += f"{str(odl[i][0][1]):>3}/216 = {str(round((odl[i][0][1]/2.16), 2)):>5}%){DEFAULT}\n"
     str1 += f"        Silver dice: {str(l2[i][1]):>3}"
     if ((odl[i][0][1]) != (-1 * odl[i][1][1])): # if it's possible to roll it
         str1 += f"     -->             {place_helper(odl[i][1][0])} ("
@@ -259,7 +281,8 @@ def less_analysis(num):
     pass
 
 ########################################  START  PROGRAM  #########################################
-program_start = "Welcome to the Board Game Island dice probability calculator."
+colorama_init()
+program_start = f"{BOLD}{BLUE}Welcome to Board Game Island DiceBot probability calculator.{DEFAULT}{RESET}"
 program_start += "\nThis version DOES account for the bonus die from rolling doubles."
 print(program_start)
 fake_load()
@@ -317,22 +340,26 @@ print_final_comparison(a, b, c, d)  # currently printing is disabled for clarity
 print()
 while True:
     query = ""
-    print("What is the goal outcome?")
+    print(f"{BLUE}{BOLD}What is the goal outcome?{DEFAULT}{RESET}")
     nap(0.2)
-    query = input("(type \">X\" for movement >= X spaces, " + 
-                  "\"=X\" for movement of exactly X spaces, " +
-                  "or \"<X\" for movement <= X spaces): ")
+    query = input(f"{DIM}(type \">X\" for movement >= X spaces, " + 
+                  f"\"=X\" for movement of exactly X spaces, " +
+                  f"or \"<X\" for movement <= X spaces):{RESET} ")
     query.split()  # query is now a list of the input characters
     fake_load()
     try:  # handle bad numbers
-        goal = int(query[1:])
-        is_int_one_to_eighteen(goal)
+        isnt_weird(query[0])  # no garbage input
+        goal = int(query[1:])  # the number must be ok
+        is_int_one_to_eighteen(goal)  # must be 1-18
+    except HuhException:
+        print(f"{BOLD}{RED}    <  ...?  >{DEFAULT}{RESET}")
+        nap(0.5)
     except ValueError:
-        print("Enter an integer number after the \"" + query[0] + "\" sign")
-        pass
+        print(f"{BOLD}{RED}    <Enter an integer number after the \"{query[0]}\" sign>{DEFAULT}{RESET}")
+        nap(0.5)
     except OutOfRangeException:
-        print("It is impossible to roll a number lower than a 1 or higher than an 18.")
-        pass
+        print(f"{BOLD}{RED}    <It is impossible to roll a number lower than 1 or higher than 18.>{DEFAULT}{RESET}")
+        nap(0.5)
     else:  # if no errors
         if (query[0] == '>'): # Greater than 
             print(greater_analysis_string(a, b, c, d, goal))
