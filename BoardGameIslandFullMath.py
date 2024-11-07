@@ -257,21 +257,33 @@ def equal_analysis_string(l1, l2, l3, l4, goal):  # goal is always 1-18
     str1 += f"{str(goal)} spaces: \n"
 
     # Results List string
-    str1 += f"        Golden dice: {str(l1[i][1]):>3}"
-    str1 += f"     -->    {GREEN}Optimal: {place_helper(odl[i][0][0])} ("
-    str1 += f"{str(odl[i][0][1]):>3}/216 = {str(round((odl[i][0][1]/2.16), 2)):>5}%){DEFAULT}\n"
-    str1 += f"        Silver dice: {str(l2[i][1]):>3}"
-    if ((odl[i][0][1]) != (-1 * odl[i][1][1])): # if it's possible to roll it
+    if((odl[i][0][1]) == (-1 * odl[i][1][1])):
+        str1 += f"        {DIM}Golden dice: {RED}{str(l1[i][1]):>3}{DEFAULT}{RESET}"
+        str1 += "\n"
+    else:
+        str1 += f"        Golden dice: {str(l1[i][1]):>3}"
+        str1 += f"     -->    {GREEN}Optimal: {place_helper(odl[i][0][0])} ("
+        str1 += f"{str(odl[i][0][1]):>3}/216 = {str(round((odl[i][0][1]/2.16), 2)):>5}%){DEFAULT}\n"
+
+    if ((odl[i][0][1]) == (-1 * odl[i][1][1])): # If it's impossible to roll
+        str1 += f"        {DIM}Silver dice: {RED}{str(l2[i][1]):>3}{DEFAULT}{RESET}"
+    else:                                       # if it's possible to roll it
+        str1 += f"        Silver dice: {str(l2[i][1]):>3}"
         str1 += f"     -->             {place_helper(odl[i][1][0])} ("
-        str1 += f"{str(odl[i][1][1]):>3}/216 = {str(round((odl[i][1][1]/2.16), 2)):>5}%)" 
+        str1 += f"{str(odl[i][1][1]):>3}/216 = {str(round((odl[i][1][1]/2.16), 2)):>5}%)"
     str1 += "\n"
-    str1 += f"        Bronze dice: {str(l3[i][1]):>3}"
-    if ((odl[i][0][1]) != (-1 * odl[i][2][1])): # if it's possible to roll it
+
+    if ((odl[i][0][1]) == (-1 * odl[i][2][1])): # If it's impossible to roll
+        str1 += f"        {DIM}Bronze dice: {RED}{str(l3[i][1]):>3}{DEFAULT}{RESET}"
+    else:                                       # if it's possible to roll it
+        str1 += f"        Bronze dice: {str(l3[i][1]):>3}"
         str1 += f"     -->             {place_helper(odl[i][2][0])} ("
-        str1 += f"{str(odl[i][2][1]):>3}/216 = {str(round((odl[i][2][1]/2.16), 2)):>5}%)" 
+        str1 += f"{str(odl[i][2][1]):>3}/216 = {str(round((odl[i][2][1]/2.16), 2)):>5}%)"
     str1 += "\n"
-    str1 += f"        Single die:  {str(l4[i][1]):>3}"
-    if ((odl[i][0][1]) != (-1 * odl[i][3][1])): # if it's possible to roll it
+    if ((odl[i][0][1]) == (-1 * odl[i][3][1])): # If it's impossible to roll
+        str1 += f"        {DIM}Single die:  {RED}{str(l4[i][1]):>3}{DEFAULT}{RESET}"
+    else:                                       # if it's possible to roll it
+        str1 += f"        Single die:  {str(l4[i][1]):>3}"
         str1 += f"     -->             {place_helper(odl[i][3][0])} ("
         str1 += f"{str(odl[i][3][1]):>3}/216 = {str(round((odl[i][3][1]/2.16), 2)):>5}%)"
     str1 += "\n"
